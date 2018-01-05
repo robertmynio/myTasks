@@ -16,9 +16,9 @@ namespace myTasks.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<TaskItem> GetAll()
+        public IActionResult GetAll()
         {
-            return _taskRepository.GetAll();
+            return Ok(_taskRepository.GetAll());
         }
 
         [HttpGet("{id}", Name = "GetTask")]
@@ -29,7 +29,7 @@ namespace myTasks.Controllers
             {
                 return NotFound();
             }
-            return new ObjectResult(item);
+            return Ok(item);
         }
 
         [HttpPost]
@@ -40,8 +40,13 @@ namespace myTasks.Controllers
                 return BadRequest();
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _taskRepository.Add(item);
-            return Ok();
+            return CreatedAtRoute("GetTask", new { id = item.Id }, item);
         }
     }
 }

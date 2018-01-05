@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using myTasks.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using myTasks.Models;
 
 namespace myTasks.Persistence
 {
@@ -23,21 +23,32 @@ namespace myTasks.Persistence
 
         private void InitializeDummyData()
         {
-            _context.TaskItems.Add(new TaskItem() { Name = "Buy new TV." });
-            _context.TaskItems.Add(new TaskItem() { Name = "Pay bills." });
-            _context.TaskItems.Add(new TaskItem() { Name = "Send package." });
+            _context.TaskItems.AddRange(
+                new TaskItem() { Name = "Buy new TV." }, 
+                new TaskItem() { Name = "Pay bills." }, 
+                new TaskItem() { Name = "Send package." });
             _context.SaveChanges();
         }
 
         public void Add(TaskItem item)
         {
+            ClearId(item);
             _context.TaskItems.Add(item);
             _context.SaveChanges();
         }
 
+        /// <summary>
+        /// Clears the Id on the item which forces the DbContext to generate a new Id upon insertion.
+        /// </summary>
+        /// <param name="item">The task item to clear the Id for.</param>
+        private void ClearId(TaskItem item)
+        {
+            item.Id = 0;
+        }
+
         public IEnumerable<TaskItem> GetAll()
         {
-            return _context.TaskItems.ToList();
+            return _context.TaskItems.OrderBy(x => x.Name).ToList();
         }
 
         public TaskItem Find(long id)
