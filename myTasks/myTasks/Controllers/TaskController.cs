@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using myTasks.Models;
 using myTasks.Persistence;
-using System.Collections.Generic;
 
 namespace myTasks.Controllers
 {
@@ -46,7 +45,57 @@ namespace myTasks.Controllers
             }
 
             _taskRepository.Add(item);
+            if (!_taskRepository.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
             return CreatedAtRoute("GetTask", new { id = item.Id }, item);
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(long id, [FromBody] TaskItem item)
+        {
+            if (item == null)
+            {
+                return BadRequest();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_taskRepository.Exists(id))
+            {
+                return NotFound();
+            }
+
+            item.Id = id;
+            _taskRepository.Update(item);
+            if (!_taskRepository.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(long id)
+        {
+            if (!_taskRepository.Exists(id))
+            {
+                return NotFound();
+            }
+
+            _taskRepository.Delete(id);
+            if (!_taskRepository.Save())
+            {
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+            return NoContent();
         }
     }
 }

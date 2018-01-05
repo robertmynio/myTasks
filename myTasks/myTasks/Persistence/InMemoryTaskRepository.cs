@@ -34,7 +34,6 @@ namespace myTasks.Persistence
         {
             ClearId(item);
             _context.TaskItems.Add(item);
-            _context.SaveChanges();
         }
 
         /// <summary>
@@ -54,6 +53,34 @@ namespace myTasks.Persistence
         public TaskItem Find(long id)
         {
             return _context.TaskItems.FirstOrDefault(t => t.Id == id);
+        }
+
+        public bool Exists(long id)
+        {
+            return Find(id) != null;
+        }
+
+        public void Update(TaskItem item)
+        {
+            var existingItem = Find(item.Id);
+            if (existingItem != null)
+            {
+                existingItem.UpdateFrom(item);
+            }
+        }
+
+        public void Delete(long id)
+        {
+            var existingItem = Find(id);
+            if (existingItem != null)
+            {
+                _context.TaskItems.Remove(existingItem);
+            }
+        }
+
+        public bool Save()
+        {
+            return _context.SaveChanges() >= 0;
         }
 
         private class TaskContext : DbContext

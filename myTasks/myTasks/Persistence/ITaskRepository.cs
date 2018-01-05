@@ -6,7 +6,12 @@ namespace myTasks.Persistence
     public interface ITaskRepository
     {
         IEnumerable<TaskItem> GetAll();
-        void Add(TaskItem item);
+        
         TaskItem Find(long id);
+        bool Exists(long id);
+        void Add(TaskItem item);
+        void Update(TaskItem item);
+        void Delete(long id);
+        bool Save();
     }
 }
