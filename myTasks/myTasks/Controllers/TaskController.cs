@@ -32,7 +32,7 @@ namespace myTasks.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] TaskItem item)
+        public IActionResult Create([FromBody] TaskItemDto item)
         {
             if (item == null)
             {
@@ -44,17 +44,18 @@ namespace myTasks.Controllers
                 return BadRequest(ModelState);
             }
 
-            _taskRepository.Add(item);
+            var taskItem = new TaskItem(item);
+            _taskRepository.Add(taskItem);
             if (!_taskRepository.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");
             }
 
-            return CreatedAtRoute("GetTask", new { id = item.Id }, item);
+            return CreatedAtRoute("GetTask", new { id = taskItem.Id }, taskItem);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody] TaskItem item)
+        public IActionResult Update(long id, [FromBody] TaskItemDto item)
         {
             if (item == null)
             {
@@ -71,8 +72,8 @@ namespace myTasks.Controllers
                 return NotFound();
             }
 
-            item.Id = id;
-            _taskRepository.Update(item);
+            var taskItem = _taskRepository.Find(id);
+            taskItem.UpdateFrom(item);
             if (!_taskRepository.Save())
             {
                 return StatusCode(500, "A problem happened while handling your request.");

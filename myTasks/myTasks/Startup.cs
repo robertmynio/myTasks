@@ -12,14 +12,23 @@ namespace myTasks
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                // OK for testing purposes
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
+
             services.AddSingleton<ITaskRepository>(new InMemoryTaskRepository());
             services.AddMvc().AddFluentValidation();
 
-            services.AddTransient<IValidator<TaskItem>, TaskItemValidator>();
+            services.AddTransient<IValidator<TaskItemDto>, TaskItemDtoValidator>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseCors("MyPolicy");
             app.UseMvc();
         }
     }

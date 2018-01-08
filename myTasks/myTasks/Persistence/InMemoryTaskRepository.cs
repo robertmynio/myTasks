@@ -9,30 +9,40 @@ namespace myTasks.Persistence
     {
         private readonly TaskContext _context;
 
-        public InMemoryTaskRepository()
+        public InMemoryTaskRepository() 
+            : this("InMemoryTaskRepository", Enumerable.Empty<TaskItem>())
+        {
+        }
+
+        public InMemoryTaskRepository(string databaseName, IEnumerable<TaskItem> seedData)
         {
             var builder = new DbContextOptionsBuilder<TaskContext>();
-            builder.UseInMemoryDatabase("InMemoryTaskRepository");
+            builder.UseInMemoryDatabase(databaseName);
             _context = new TaskContext(builder.Options);
 
             if (_context.TaskItems.Count() == 0)
             {
-                InitializeDummyData();
+                InitializeDummyData(seedData);
             }
         }
 
-        private void InitializeDummyData()
+        private void InitializeDummyData(IEnumerable<TaskItem> seedData)
         {
-            _context.TaskItems.AddRange(
-                new TaskItem() { Name = "Buy new TV." }, 
-                new TaskItem() { Name = "Pay bills." }, 
-                new TaskItem() { Name = "Send package." });
+            if (!seedData.Any())
+            {
+                seedData = new[]
+                {
+                    new TaskItem() { Name = "Buy new TV." },
+                    new TaskItem() { Name = "Pay bills." },
+                    new TaskItem() { Name = "Send package." }
+                };
+            }
+            _context.TaskItems.AddRange(seedData);
             _context.SaveChanges();
         }
 
         public void Add(TaskItem item)
         {
-            ClearId(item);
             _context.TaskItems.Add(item);
         }
 
@@ -58,15 +68,6 @@ namespace myTasks.Persistence
         public bool Exists(long id)
         {
             return Find(id) != null;
-        }
-
-        public void Update(TaskItem item)
-        {
-            var existingItem = Find(item.Id);
-            if (existingItem != null)
-            {
-                existingItem.UpdateFrom(item);
-            }
         }
 
         public void Delete(long id)

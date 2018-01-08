@@ -10,7 +10,6 @@ namespace myTasks.Persistence
         TaskItem Find(long id);
         bool Exists(long id);
         void Add(TaskItem item);
-        void Update(TaskItem item);
         void Delete(long id);
         bool Save();
     }
