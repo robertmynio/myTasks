@@ -46,15 +46,6 @@ namespace myTasks.Persistence
             _context.TaskItems.Add(item);
         }
 
-        /// <summary>
-        /// Clears the Id on the item which forces the DbContext to generate a new Id upon insertion.
-        /// </summary>
-        /// <param name="item">The task item to clear the Id for.</param>
-        private void ClearId(TaskItem item)
-        {
-            item.Id = 0;
-        }
-
         public IEnumerable<TaskItem> GetAll()
         {
             return _context.TaskItems.OrderBy(x => x.Name).ToList();
