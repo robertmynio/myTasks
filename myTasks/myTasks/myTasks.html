@@ -1,34 +1,20 @@
 ﻿<!doctype html>
-<html ng-app="todoApp">
+<html ng-app="MyTasksApp">
 <head>
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/2.6.3/css/fabric.min.css" />
     <link rel="stylesheet" href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/2.6.3/css/fabric.components.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ngOfficeUiFabric/0.16.0/ngOfficeUiFabric.min.js"></script>
-    <script src="todo.js"></script>
+    <script src="myTasks.js"></script>
 </head>
 <body>
-    <h2>Todo</h2>
-    <div ng-controller="TodoListController as todoList">
-        <span>{{todoList.remaining()}} of {{todoList.todos.length}} remaining</span>
-        [ <a href="" ng-click="todoList.archive()">archive</a> ]
-        <ul class="unstyled">
-            <li ng-repeat="todo in todoList.todos">
-                <label class="checkbox">
-                    <input type="checkbox" ng-model="todo.done">
-                    <span class="done-{{todo.done}}">{{todo.text}}</span>
-                </label>
-            </li>
-        </ul>
-        <form ng-submit="todoList.addTodo()">
-            <input type="text" ng-model="todoList.todoText" size="30"
-                   placeholder="add new todo here">
-            <input class="btn-primary" type="submit" value="add">
-        </form>
+    <h2>My Tasks</h2>
+    <div ng-controller="MyTasksController as myTasks">
+        <div>Task With Id 1</div>
+        <div>Name = {{myTasks.taskWithId1.name}}</div>
+        <div>Is Complete = {{myTasks.taskWithId1.isComplete}}</div>
 
         <br />
-
-        <div>FirstName = {{todoList.getTask.name}}</div>
 
         <div class="ms-Grid">
             <div class="ms-Grid-row">
