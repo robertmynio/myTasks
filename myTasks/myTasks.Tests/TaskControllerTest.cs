@@ -28,15 +28,15 @@ namespace myTasks.Tests
             Assert.Equal(4, tasks.Count());
         }
 
+        private TaskController CreateTaskController(string databaseName)
+        {
+            return new TaskController(new InMemoryTaskRepository(databaseName, _testData));
+        }
+
         private static IEnumerable<TaskItem> GetAllTasks(TaskController controller)
         {
             var result = controller.GetAll() as OkObjectResult;
             return result.Value as IEnumerable<TaskItem>;
-        }
-
-        private TaskController CreateTaskController(string databaseName)
-        {
-            return new TaskController(new InMemoryTaskRepository(databaseName, _testData));
         }
 
         [Fact]
@@ -62,16 +62,16 @@ namespace myTasks.Tests
             Assert.Equal(_testData[3].IsComplete, task.IsComplete);
         }
 
-        private long GetTaskIdForTask(TaskController controller, string taskName)
-        {
-            var allTasks = GetAllTasks(controller);
-            return allTasks.FirstOrDefault(t => t.Name == taskName).Id;
-        }
-
         private static TaskItem GetTaskById(TaskController controller, long id)
         {
             var result = controller.GetById(id) as OkObjectResult;
             return result.Value as TaskItem;
+        }
+
+        private long GetTaskIdForTask(TaskController controller, string taskName)
+        {
+            var allTasks = GetAllTasks(controller);
+            return allTasks.FirstOrDefault(t => t.Name == taskName).Id;
         }
 
         [Fact] 
